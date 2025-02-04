@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Game Sales Analysis</title>
+    <!--Simple CSS to format the webpage better-->
+    <style>
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+
+        .submit-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .platform-selection {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Video Game Sales Analysis</h1>
+        <!--Form for the user input-->
+        <form action="{{ url_for('submit_analysis') }}" method="post">
+            <div class="platform-selection">
+                <label for="platform">Choose Platform:</label>
+                <!--Dynamic displaying the platform options from app.py -->
+                <select name="platform" id="platform">
+                    {% for platform in platforms %}
+                        <option value="{{ platform }}" {% if platform == session.get('platform', 'PC') %}selected{% endif %}>
+                            {{ platform }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!--Data Visualization Options-->
+            <div class="form-group">
+                <p>Select which data you would like to visualize:</p>
+                <!--Dynamic radio buttons for visualization options-->
+                {% for key, value in options.items() %}
+                <div>
+                    <input type="radio" name="data_request" id="{{ key }}" value="{{ key }}"
+                           {% if key == session.get('data_request', 'sales') %}checked{% endif %}>
+                    <label for="{{ key }}">{{ value }}</label>
+                </div>
+                {% endfor %}
+                <input type="submit" value="Submit" class="submit-button">
+            </div>
+        </form>
+
+        <!--Table To Show Top 10 Game Data For Reference-->
+        {% if games %}
+        <div>
+            <h2>Top Games by Global Sales</h2>
+            <table>
+                <!-- Table Header -->
+                <tr>
+                    <th>Name</th>
+                    <th>Platform</th>
+                    <th>Year</th>
+                    <th>Global Sales (millions)</th>
+                </tr>
+                <!-- Dynamic Table Rows -->
+                {% for game in games %}
+                <tr>
+                    <td>{{ game.name }}</td>
+                    <td>{{ game.platform }}</td>
+                    <td>{{ game.year }}</td>
+                    <td>{{ "%.2f"|format(game.global_sales) }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+
+        <!--Any errors, just display them here-->
+        {% if error %}
+        <div style="color: #7e428f;">
+            Error: {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

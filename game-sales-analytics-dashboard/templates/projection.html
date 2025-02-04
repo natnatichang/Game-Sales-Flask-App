@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales Prediction - {{ platform }}</title>
+    <!--Simple CSS to format the webpage better-->
+    <style>
+        .container {
+            width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .prediction-image {
+            width: 100%;
+            max-width: 800px;
+            height: auto;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 20px 0;
+            text-decoration: none;
+            color: black;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .prediction-value {
+            margin: 20px 0;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <!--Main container context-->
+    <div class="container">
+        <!--Title that changes based on what platform the user chooses-->
+        <h1>Sales Prediction for {{ platform }} in {{ year }}</h1>
+
+        <!--Prediction visualization-->
+        <img class="prediction-image" src="{{ url_for('fig', data_request='prediction', platform=platform) }}">
+
+        <!--Depending on what the prediction value was-->
+        <div class="prediction-value">
+            <!--If the value was in the negatives, display message since value can't technically be in the negatives-->
+            {% if prediction <= 0 %}
+                Based on the trend, {{ platform }} is predicted to be inactive or discontinued by {{ year }}.
+            <!--If the prediction value was positive, then display the prediction-->
+            {% else %}
+                The projected sales for {{ year }} is {{ "%.2f"|format(prediction) }}M units.
+                Based on the historical trend analysis, this prediction suggests {{ "an increasing" if prediction > 0 else "a decreasing" }} trend in sales.
+            {% endif %}
+        </div>
+         <!-- Navigation button back to home page -->
+        <a href="{{ url_for('back_to_home') }}" class="back-link">Back to Home</a>
+    </div>
+</body>
+</html>

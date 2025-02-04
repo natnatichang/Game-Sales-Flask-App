@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ platform }} Analysis</title>
+    <!--Simple CSS to format the webpage better-->
+    <style>
+        body {
+            text-align: center;
+            padding: 20px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        img {
+            margin-bottom: 40px;
+            max-width: 800px;
+            width: 80%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        input, .back-link {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin: 5px 0;
+            text-decoration: none;
+            color: black;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Header with Dynamic Platform Name -->
+    <h1>Video Game Sales for {{ platform }}</h1>
+
+    <!-- Dynamic image generation using Flask's url_for -->
+    <img src="{{ url_for('fig', data_request=data_request, platform=platform) }}">
+
+    <!-- Conditional rendering of prediction form -->
+    {% if data_request == "prediction" %}
+        <div>
+            <!-- Form for sales projection -->
+            <form action="{{ url_for('submit_projection') }}" method="post">
+                 <!-- Hidden input to maintain platform selection -->
+                <input type="hidden" name="platform" value="{{ platform }}">
+
+                 <!-- Year input field -->
+                <label for="year">Project Sales To Year:</label>
+                <input type="number" id="year" name="year" min="2024" max="2070" required>
+
+                <!-- Submit button -->
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    {% endif %}
+
+    <!-- Back button to return to home page -->
+    <a href="{{ url_for('back_to_home') }}" class="back-link">Back to Home</a>
+</body>
+</html>
